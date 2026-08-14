@@ -28,6 +28,7 @@ const levelSelect = document.querySelector("#level-select");
 const levelGrid = document.querySelector("#level-grid");
 const modeTitle = document.querySelector("#mode-title");
 const entryModeLabel = document.querySelector("#entry-mode-label");
+const entryNumber = document.querySelector("#entry-number");
 const achievementStar = document.querySelector("#achievement-star");
 const statusMessage = document.querySelector("#status-message");
 const formMessage = document.querySelector("#form-message");
@@ -48,11 +49,6 @@ let currentPhobia = "";
 let currentEntry = null;
 let currentEntryCount = 0;
 let currentEntries = [];
-let touchStartX = 0;
-let touchStartY = 0;
-let touchMayReveal = false;
-let touchIsScrolling = false;
-let touchRevealTimer = 0;
 
 const savedPhobia = window.localStorage.getItem("phobys:selected-phobia");
 
@@ -165,71 +161,14 @@ imageFrame?.addEventListener(
       return;
     }
 
-    const touch = event.touches[0];
-
-    touchStartX = touch.clientX;
-    touchStartY = touch.clientY;
-    touchMayReveal = true;
-    touchIsScrolling = false;
-    window.clearTimeout(touchRevealTimer);
-    touchRevealTimer = window.setTimeout(() => {
-      if (touchMayReveal && !touchIsScrolling) {
-        startReducingBlur();
-      }
-    }, 180);
-  },
-  { passive: false }
-);
-
-imageFrame?.addEventListener(
-  "touchmove",
-  (event) => {
-    if (!touchMayReveal || touchIsScrolling) {
-      return;
-    }
-
-    const touch = event.touches[0];
-    const deltaX = Math.abs(touch.clientX - touchStartX);
-    const deltaY = Math.abs(touch.clientY - touchStartY);
-
-    if (deltaY > 10 && deltaY > deltaX * 1.2) {
-      touchIsScrolling = true;
-      touchMayReveal = false;
-      window.clearTimeout(touchRevealTimer);
-      stopReducingBlur();
-      return;
-    }
-
-    if (deltaX > 8 || deltaY > 8) {
-      return;
-    }
-
     event.preventDefault();
     startReducingBlur();
   },
   { passive: false }
 );
 
-imageFrame?.addEventListener(
-  "touchend",
-  () => {
-    touchMayReveal = false;
-    touchIsScrolling = false;
-    window.clearTimeout(touchRevealTimer);
-  },
-  { passive: true }
-);
-
-window.addEventListener("touchend", () => {
-  window.clearTimeout(touchRevealTimer);
-  stopReducingBlur();
-});
-window.addEventListener("touchcancel", () => {
-  touchMayReveal = false;
-  touchIsScrolling = false;
-  window.clearTimeout(touchRevealTimer);
-  stopReducingBlur();
-});
+window.addEventListener("touchend", stopReducingBlur);
+window.addEventListener("touchcancel", stopReducingBlur);
 
 imageFrame?.addEventListener("keydown", (event) => {
   if (event.code !== "Space" && event.code !== "Enter") {
@@ -276,7 +215,7 @@ function showDailyScreen(mode) {
   }
 
   if (entryModeLabel) {
-    entryModeLabel.textContent = getEntryModeLabel(mode);
+    entryModeLabel.textContent = mode === "practice" ? "Practice entry" : "Daily entry";
   }
 }
 
@@ -422,7 +361,7 @@ function renderDailyEntry(entry, phobia) {
   resetExposureState();
   currentEntry = entry;
   updateAchievementStar();
-  updateEntryModeLabel();
+  updateEntryNumber(entry);
   dailyImage.alt = `${entry.name} ${phobia} daily entry`;
   dailyName.textContent = entry.name;
   dailyFact.textContent = entry.fact;
@@ -619,6 +558,7 @@ function resetExposureState() {
   dailyFact.setAttribute("aria-hidden", "true");
   revealNameButton.hidden = true;
   revealFactButton.hidden = true;
+  updateEntryNumber(null);
   updateAchievementStar();
 }
 
@@ -632,29 +572,19 @@ function blankProtectedImage() {
   setStatus("");
 }
 
-function getEntryModeLabel(mode) {
-  if (mode !== "practice") {
-    return "Daily entry";
-  }
-
-  if (!currentEntry) {
-    return "Practice entry";
-  }
-
-  return `Practice entry ${currentEntry.index + 1}`;
-}
-
-function updateEntryModeLabel() {
-  if (entryModeLabel) {
-    entryModeLabel.textContent = getEntryModeLabel(currentMode);
-  }
-}
-
 function updateImageFrameAspect() {
   const naturalRatio = dailyImage.naturalWidth / dailyImage.naturalHeight;
   const boundedRatio = Math.min(Math.max(naturalRatio || 1, 0.72), 1.85);
 
   imageFrame.style.setProperty("--frame-aspect", boundedRatio);
+}
+
+function updateEntryNumber(entry) {
+  if (!entryNumber) {
+    return;
+  }
+
+  entryNumber.textContent = entry ? `#${entry.index + 1}` : "";
 }
 
 function celebrateFullReveal() {
