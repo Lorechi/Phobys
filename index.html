@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Phobys</title>
+    <link rel="icon" type="image/png" href="Resources/favicon.png">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
@@ -11,7 +12,7 @@
       <section class="welcome-panel" id="landing-screen" aria-labelledby="welcome-title">
         <div class="intro">
           <p class="eyebrow">Daily phobia practice</p>
-          <h1 id="welcome-title">Welcome to Phobys!</h1>
+          <h1 id="welcome-title">Welcome to Phoble!</h1>
           <p>
             Here you can tackle your fears in small doses of your own choosing
             and abilities! <b>You will NEVER see an image, name or fact of your
@@ -33,11 +34,25 @@
             <option value="spiders">Spiders</option>
             <option value="snakes">Snakes</option>
           </select>
+          <p class="achievement-context">Already revealed/fully unblurred:</p>
           <div class="progress-counter" id="progress-counter">
-            <p>Names revealed in this category: 0/0</p>
-            <p>Facts revealed in this category: 0/0</p>
-            <p>Images fully unblurred in this category: 0/0</p>
+            <div class="achievement-card">
+              <span>Names</span>
+              <strong>0/0</strong>
+            </div>
+            <div class="achievement-card">
+              <span>Facts</span>
+              <strong>0/0</strong>
+            </div>
+            <div class="achievement-card">
+              <span>Images</span>
+              <strong>0/0</strong>
+            </div>
           </div>
+          <p class="completion-message" id="completion-message" hidden>
+            WOOOOOOW, you did it!!! If you want you can send me feedback to
+            extend the database. Thanks for using Phoble and I hope it helped!!
+          </p>
           <p class="form-message" id="form-message" role="status"></p>
         </form>
       </section>
@@ -156,6 +171,15 @@
         <button class="daily-button" id="daily-button" type="button">Daily</button>
       </div>
     </main>
+
+    <a
+      class="feedback-button"
+      href="https://docs.google.com/forms/d/e/1FAIpQLScbnsfY6RXofSUGTQuTjvnFa-LNp_92t23gt5FbX8H3z6QUkQ/viewform?usp=publish-editor"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Feedback
+    </a>
 
     <script src="script.js"></script>
   </body>

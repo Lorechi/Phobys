@@ -34,6 +34,7 @@ const statusMessage = document.querySelector("#status-message");
 const formMessage = document.querySelector("#form-message");
 const progressCounter = document.querySelector("#progress-counter");
 const actions = document.querySelector(".actions");
+const completionMessage = document.querySelector("#completion-message");
 const BLUR_REDUCTION_PER_SECOND = 20;
 const MAX_BLUR_PX = 48;
 const NAME_REVEAL_PROGRESS = 20;
@@ -49,6 +50,7 @@ let currentPhobia = "";
 let currentEntry = null;
 let currentEntryCount = 0;
 let currentEntries = [];
+let entryRequestId = 0;
 
 const savedPhobia = window.localStorage.getItem("phobys:selected-phobia");
 
@@ -95,6 +97,7 @@ async function openEntryMode(mode) {
   }
 
   currentMode = mode;
+  const requestId = ++entryRequestId;
   setFormMessage("");
   blankProtectedImage();
   showDailyScreen(mode);
@@ -103,6 +106,11 @@ async function openEntryMode(mode) {
 
   try {
     const entries = await fetchSheetEntries(SHEETS[selectedPhobia]);
+
+    if (requestId !== entryRequestId) {
+      return;
+    }
+
     currentPhobia = selectedPhobia;
     currentEntryCount = entries.length;
     currentEntries = entries;
@@ -119,11 +127,14 @@ async function openEntryMode(mode) {
     );
     console.error(error);
   } finally {
-    setLoadingState(false);
+    if (requestId === entryRequestId) {
+      setLoadingState(false);
+    }
   }
 }
 
 backButton?.addEventListener("click", () => {
+  entryRequestId++;
   blankProtectedImage();
   landingScreen.hidden = false;
   dailyScreen.hidden = true;
@@ -224,6 +235,7 @@ async function openLevelSelect() {
     return;
   }
 
+  entryRequestId++;
   blankProtectedImage();
   currentMode = "level-select";
   contentWarning.hidden = true;
@@ -240,10 +252,17 @@ async function openLevelSelect() {
   setStatus("Choose an entry.");
 
   if (!currentEntries.length) {
-    setLoadingState(true);
-    currentEntries = await fetchSheetEntries(SHEETS[currentPhobia]);
-    currentEntryCount = currentEntries.length;
-    setLoadingState(false);
+    try {
+      setLoadingState(true);
+      currentEntries = await fetchSheetEntries(SHEETS[currentPhobia]);
+      currentEntryCount = currentEntries.length;
+    } catch (error) {
+      setStatus("I couldn't load the level list right now.");
+      console.error(error);
+      return;
+    } finally {
+      setLoadingState(false);
+    }
   }
 
   renderLevelSelect();
@@ -625,10 +644,21 @@ async function updateProgressCounter(phobia, knownTotal) {
 
 function renderProgressCounter(names, facts, images, total) {
   progressCounter.innerHTML = `
-    <p>Names revealed in this category: ${names}/${total}</p>
-    <p>Facts revealed in this category: ${facts}/${total}</p>
-    <p>Images fully unblurred in this category: ${images}/${total}</p>
+    <div class="achievement-card">
+      <span>Names</span>
+      <strong>${names}/${total}</strong>
+    </div>
+    <div class="achievement-card">
+      <span>Facts</span>
+      <strong>${facts}/${total}</strong>
+    </div>
+    <div class="achievement-card">
+      <span>Images</span>
+      <strong>${images}/${total}</strong>
+    </div>
   `;
+
+  updateCompletionMessage(images, total);
 }
 
 function markCurrentEntryProgress(track) {
@@ -775,4 +805,13 @@ function sortIndexes(indexes) {
 
 function getProgressKey(phobia, track) {
   return `phobys:progress:${phobia}:${track}`;
+}
+
+function updateCompletionMessage(images, total) {
+  if (!completionMessage) {
+    return;
+  }
+
+  completionMessage.hidden =
+    typeof total !== "number" || total === 0 || images < total;
 }

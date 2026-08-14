@@ -503,18 +503,79 @@ select:focus-visible,
   font-weight: 700;
 }
 
+.achievement-context {
+  color: var(--ink);
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
 .progress-counter {
   color: var(--ink);
   display: grid;
-  gap: 0.25rem;
-  font-size: 0.9rem;
-  font-weight: 800;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
 }
 
-.progress-counter p {
-  color: inherit;
+.completion-message {
+  padding: 0.8rem 0.9rem;
+  border: 1px solid rgba(43, 37, 33, 0.14);
+  border-radius: 8px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.78);
+  font-size: 0.96rem;
+  font-weight: 900;
+  line-height: 1.45;
+  box-shadow: 0 0.7rem 1.4rem rgba(96, 56, 27, 0.08);
+}
+
+.achievement-card {
+  min-height: 4.5rem;
+  padding: 0.75rem;
+  border: 1px solid rgba(43, 37, 33, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.76);
+  box-shadow: 0 0.7rem 1.4rem rgba(96, 56, 27, 0.08);
+}
+
+.achievement-card span,
+.achievement-card strong {
+  display: block;
+}
+
+.achievement-card span {
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.achievement-card strong {
+  margin-top: 0.35rem;
+  color: var(--ink);
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.feedback-button {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 20;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.9);
   font: inherit;
-  line-height: 1.35;
+  font-weight: 900;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 1rem 2rem rgba(43, 37, 33, 0.16);
 }
 
 .actions {
@@ -626,6 +687,10 @@ select:focus-visible,
 
   .exposure-option {
     font-size: 0.82rem;
+  }
+
+  .progress-counter {
+    grid-template-columns: 1fr;
   }
 }
 
