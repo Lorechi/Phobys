@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Phobys</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="welcome-panel" id="landing-screen" aria-labelledby="welcome-title">
+        <div class="intro">
+          <p class="eyebrow">Daily phobia practice</p>
+          <h1 id="welcome-title">Welcome to Phoble.</h1>
+          <p>
+            Here you can tackle your fears in small doses of your own choosing
+            and abilities! <b>You will NEVER see an image, name or fact of your
+            chosen phobia without clear indications or warnings!</b> The image
+            will be blurred and can be gradually uncovered by you pressing down on it.
+            Name and a fact can be revealed after some unblurring progress.
+          </p>
+          <p>
+            This is a safe place to deal with your phobia on your own terms. It
+            was made by someone with a  phobia, trying to battle it by
+            daily challenges.
+          </p>
+        </div>
+
+        <form class="phobia-form" aria-label="Choose your phobia">
+          <label for="phobia-select">Choose your phobia</label>
+          <select id="phobia-select" name="phobia">
+            <option value="" selected>Select one</option>
+            <option value="spiders">Spiders</option>
+            <option value="snakes">Snakes</option>
+          </select>
+          <div class="progress-counter" id="progress-counter">
+            <p>Names revealed in this category: 0/0</p>
+            <p>Facts revealed in this category: 0/0</p>
+            <p>Images fully unblurred in this category: 0/0</p>
+          </div>
+          <p class="form-message" id="form-message" role="status"></p>
+        </form>
+      </section>
+
+      <section class="daily-screen" id="daily-screen" aria-live="polite" hidden>
+        <div class="content-warning" id="content-warning">
+          <p class="eyebrow">Content warning</p>
+          <h2 id="mode-title">Today's chosen-phobia entry is below.</h2>
+          <p>
+            This screen contains an image, name, and fact for the phobia you
+            selected.
+          </p>
+        </div>
+
+        <article class="daily-card">
+          <div
+            class="image-frame"
+            id="image-frame"
+            aria-label="Hold to slowly reduce the image blur"
+            role="img"
+            tabindex="0"
+          >
+            <div class="blur-progress" aria-label="Blur reduction progress">
+              <div class="blur-progress-fill" id="blur-progress-fill"></div>
+            </div>
+            <img
+              id="daily-image"
+              alt=""
+              style="opacity: 0; filter: blur(32px); transform: scale(1);"
+            >
+            <div class="image-placeholder" id="image-placeholder">
+              Protected image area
+            </div>
+            <div class="celebration" id="celebration" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+          <div class="daily-side">
+            <div class="exposure-options">
+              <label class="exposure-option">
+                <input id="reset-progress" type="checkbox">
+                <span>Re-blur completely when releasing</span>
+              </label>
+              <label class="exposure-option">
+                <input id="grayscale-only" type="checkbox">
+                <span>Greyscale only</span>
+              </label>
+            </div>
+            <div class="daily-copy">
+              <div class="entry-heading">
+                <p class="eyebrow" id="entry-mode-label">Daily entry</p>
+                <span class="achievement-star" id="achievement-star" hidden>
+                  ★
+                </span>
+              </div>
+              <div class="revealed-field">
+                <div class="threshold-progress" aria-label="Progress to reveal name">
+                  <div
+                    class="threshold-progress-fill"
+                    id="name-progress-fill"
+                  ></div>
+                </div>
+                <button
+                  class="reveal-button"
+                  id="reveal-name-button"
+                  type="button"
+                  hidden
+                >
+                  Reveal name
+                </button>
+                <h2 class="blurred-text" id="daily-name" aria-hidden="true"></h2>
+              </div>
+              <div class="revealed-field">
+                <div class="threshold-progress" aria-label="Progress to reveal fact">
+                  <div
+                    class="threshold-progress-fill"
+                    id="fact-progress-fill"
+                  ></div>
+                </div>
+                <button
+                  class="reveal-button"
+                  id="reveal-fact-button"
+                  type="button"
+                  hidden
+                >
+                  Reveal fact
+                </button>
+                <p class="blurred-text" id="daily-fact" aria-hidden="true"></p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <p class="status-message" id="status-message" role="status"></p>
+
+        <section class="level-select" id="level-select" hidden>
+          <div class="level-grid" id="level-grid" aria-label="Choose an entry"></div>
+        </section>
+      </section>
+
+      <div class="actions">
+        <button class="secondary-button" id="back-button" type="button" hidden>
+          Back
+        </button>
+        <button class="secondary-button" id="practice-button" type="button" hidden>
+          Practice
+        </button>
+        <button class="secondary-button" id="level-select-button" type="button" hidden>
+          Level select
+        </button>
+        <button class="daily-button" id="daily-button" type="button">Daily</button>
+      </div>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
