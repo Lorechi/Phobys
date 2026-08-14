@@ -303,7 +303,8 @@ p {
 }
 
 .achievement-star.bronze {
-  background: #c77a3d;
+  background: #9b6a58;
+  color: #ffffff;
 }
 
 .achievement-star.silver {
@@ -447,7 +448,14 @@ p {
 }
 
 .level-star.bronze {
-  color: #a95f2c;
+  color: #7b4b3d;
+}
+
+.entry-number {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .level-star.silver {

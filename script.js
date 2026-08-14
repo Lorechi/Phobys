@@ -28,6 +28,7 @@ const levelSelect = document.querySelector("#level-select");
 const levelGrid = document.querySelector("#level-grid");
 const modeTitle = document.querySelector("#mode-title");
 const entryModeLabel = document.querySelector("#entry-mode-label");
+const entryNumber = document.querySelector("#entry-number");
 const achievementStar = document.querySelector("#achievement-star");
 const statusMessage = document.querySelector("#status-message");
 const formMessage = document.querySelector("#form-message");
@@ -360,6 +361,7 @@ function renderDailyEntry(entry, phobia) {
   resetExposureState();
   currentEntry = entry;
   updateAchievementStar();
+  updateEntryNumber(entry);
   dailyImage.alt = `${entry.name} ${phobia} daily entry`;
   dailyName.textContent = entry.name;
   dailyFact.textContent = entry.fact;
@@ -556,6 +558,7 @@ function resetExposureState() {
   dailyFact.setAttribute("aria-hidden", "true");
   revealNameButton.hidden = true;
   revealFactButton.hidden = true;
+  updateEntryNumber(null);
   updateAchievementStar();
 }
 
@@ -574,6 +577,14 @@ function updateImageFrameAspect() {
   const boundedRatio = Math.min(Math.max(naturalRatio || 1, 0.72), 1.85);
 
   imageFrame.style.setProperty("--frame-aspect", boundedRatio);
+}
+
+function updateEntryNumber(entry) {
+  if (!entryNumber) {
+    return;
+  }
+
+  entryNumber.textContent = entry ? `#${entry.index + 1}` : "";
 }
 
 function celebrateFullReveal() {
