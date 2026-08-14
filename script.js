@@ -48,6 +48,11 @@ let currentPhobia = "";
 let currentEntry = null;
 let currentEntryCount = 0;
 let currentEntries = [];
+let touchStartX = 0;
+let touchStartY = 0;
+let touchMayReveal = false;
+let touchIsScrolling = false;
+let touchRevealTimer = 0;
 
 const savedPhobia = window.localStorage.getItem("phobys:selected-phobia");
 
@@ -160,14 +165,71 @@ imageFrame?.addEventListener(
       return;
     }
 
+    const touch = event.touches[0];
+
+    touchStartX = touch.clientX;
+    touchStartY = touch.clientY;
+    touchMayReveal = true;
+    touchIsScrolling = false;
+    window.clearTimeout(touchRevealTimer);
+    touchRevealTimer = window.setTimeout(() => {
+      if (touchMayReveal && !touchIsScrolling) {
+        startReducingBlur();
+      }
+    }, 180);
+  },
+  { passive: false }
+);
+
+imageFrame?.addEventListener(
+  "touchmove",
+  (event) => {
+    if (!touchMayReveal || touchIsScrolling) {
+      return;
+    }
+
+    const touch = event.touches[0];
+    const deltaX = Math.abs(touch.clientX - touchStartX);
+    const deltaY = Math.abs(touch.clientY - touchStartY);
+
+    if (deltaY > 10 && deltaY > deltaX * 1.2) {
+      touchIsScrolling = true;
+      touchMayReveal = false;
+      window.clearTimeout(touchRevealTimer);
+      stopReducingBlur();
+      return;
+    }
+
+    if (deltaX > 8 || deltaY > 8) {
+      return;
+    }
+
     event.preventDefault();
     startReducingBlur();
   },
   { passive: false }
 );
 
-window.addEventListener("touchend", stopReducingBlur);
-window.addEventListener("touchcancel", stopReducingBlur);
+imageFrame?.addEventListener(
+  "touchend",
+  () => {
+    touchMayReveal = false;
+    touchIsScrolling = false;
+    window.clearTimeout(touchRevealTimer);
+  },
+  { passive: true }
+);
+
+window.addEventListener("touchend", () => {
+  window.clearTimeout(touchRevealTimer);
+  stopReducingBlur();
+});
+window.addEventListener("touchcancel", () => {
+  touchMayReveal = false;
+  touchIsScrolling = false;
+  window.clearTimeout(touchRevealTimer);
+  stopReducingBlur();
+});
 
 imageFrame?.addEventListener("keydown", (event) => {
   if (event.code !== "Space" && event.code !== "Enter") {
@@ -214,7 +276,7 @@ function showDailyScreen(mode) {
   }
 
   if (entryModeLabel) {
-    entryModeLabel.textContent = mode === "practice" ? "Practice entry" : "Daily entry";
+    entryModeLabel.textContent = getEntryModeLabel(mode);
   }
 }
 
@@ -360,6 +422,7 @@ function renderDailyEntry(entry, phobia) {
   resetExposureState();
   currentEntry = entry;
   updateAchievementStar();
+  updateEntryModeLabel();
   dailyImage.alt = `${entry.name} ${phobia} daily entry`;
   dailyName.textContent = entry.name;
   dailyFact.textContent = entry.fact;
@@ -567,6 +630,24 @@ function blankProtectedImage() {
   dailyFact.textContent = "";
   imagePlaceholder.textContent = "Protected image area";
   setStatus("");
+}
+
+function getEntryModeLabel(mode) {
+  if (mode !== "practice") {
+    return "Daily entry";
+  }
+
+  if (!currentEntry) {
+    return "Practice entry";
+  }
+
+  return `Practice entry ${currentEntry.index + 1}`;
+}
+
+function updateEntryModeLabel() {
+  if (entryModeLabel) {
+    entryModeLabel.textContent = getEntryModeLabel(currentMode);
+  }
 }
 
 function updateImageFrameAspect() {
