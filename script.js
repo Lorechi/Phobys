@@ -12,6 +12,7 @@ const practiceButton = document.querySelector("#practice-button");
 const levelSelectButton = document.querySelector("#level-select-button");
 const dailyImage = document.querySelector("#daily-image");
 const imageFrame = document.querySelector("#image-frame");
+const imageTouchShield = document.querySelector("#image-touch-shield");
 const imagePlaceholder = document.querySelector("#image-placeholder");
 const blurProgressFill = document.querySelector("#blur-progress-fill");
 const nameProgressFill = document.querySelector("#name-progress-fill");
@@ -159,6 +160,13 @@ imageFrame?.addEventListener("pointerdown", (event) => {
   imageFrame.setPointerCapture(event.pointerId);
   startReducingBlur();
 });
+
+imageFrame?.addEventListener("contextmenu", preventNativeImageAction);
+imageFrame?.addEventListener("dragstart", preventNativeImageAction);
+imageFrame?.addEventListener("selectstart", preventNativeImageAction);
+dailyImage?.addEventListener("contextmenu", preventNativeImageAction);
+dailyImage?.addEventListener("dragstart", preventNativeImageAction);
+imageTouchShield?.addEventListener("contextmenu", preventNativeImageAction);
 
 imageFrame?.addEventListener("pointerup", stopReducingBlur);
 imageFrame?.addEventListener("pointercancel", stopReducingBlur);
@@ -466,6 +474,10 @@ function setFormMessage(message) {
   if (formMessage) {
     formMessage.textContent = message;
   }
+}
+
+function preventNativeImageAction(event) {
+  event.preventDefault();
 }
 
 function startReducingBlur() {
