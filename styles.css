@@ -418,6 +418,24 @@ p {
   background: var(--white);
 }
 
+.article-button {
+  width: fit-content;
+  min-height: 2.5rem;
+  padding: 0 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.8);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.article-button:hover {
+  background: var(--white);
+}
+
 .status-message {
   margin-top: 1rem;
   color: var(--ink);
@@ -594,6 +612,63 @@ select:focus-visible,
   text-decoration: none;
   cursor: pointer;
   box-shadow: 0 1rem 2rem rgba(43, 37, 33, 0.16);
+}
+
+.article-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(43, 37, 33, 0.34);
+}
+
+.article-overlay[hidden] {
+  display: none;
+}
+
+.article-panel {
+  position: relative;
+  width: min(100%, 46rem);
+  max-height: min(82vh, 46rem);
+  display: grid;
+  gap: 0.9rem;
+  padding: 1.2rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  box-shadow: 0 1.5rem 4rem rgba(43, 37, 33, 0.24);
+}
+
+.article-panel h2 {
+  padding-right: 2.4rem;
+  font-size: clamp(1.25rem, 3vw, 1.75rem);
+}
+
+.article-close {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.7rem;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  background: var(--white);
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.article-text {
+  overflow: auto;
+  max-height: min(65vh, 36rem);
+  padding-right: 0.35rem;
+  color: var(--ink);
+  font-size: 0.98rem;
+  line-height: 1.65;
+  white-space: pre-wrap;
 }
 
 .actions {

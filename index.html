@@ -151,6 +151,13 @@
                   Reveal fact
                 </button>
                 <p class="blurred-text" id="daily-fact" aria-hidden="true"></p>
+                <button
+                  class="article-button"
+                  id="article-button"
+                  type="button"
+                >
+                  Wikipedia Article in Plaintext
+                </button>
               </div>
             </div>
           </div>
@@ -185,6 +192,21 @@
     >
       Feedback
     </a>
+
+    <div class="article-overlay" id="article-overlay" hidden>
+      <section class="article-panel" aria-labelledby="article-title">
+        <button
+          class="article-close"
+          id="article-close"
+          type="button"
+          aria-label="Close article"
+        >
+          X
+        </button>
+        <h2 id="article-title">Wikipedia Article in Plaintext</h2>
+        <div class="article-text" id="article-text"></div>
+      </section>
+    </div>
 
     <script src="script.js"></script>
   </body>

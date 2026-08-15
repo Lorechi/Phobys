@@ -23,6 +23,10 @@ const dailyName = document.querySelector("#daily-name");
 const dailyFact = document.querySelector("#daily-fact");
 const revealNameButton = document.querySelector("#reveal-name-button");
 const revealFactButton = document.querySelector("#reveal-fact-button");
+const articleButton = document.querySelector("#article-button");
+const articleOverlay = document.querySelector("#article-overlay");
+const articleClose = document.querySelector("#article-close");
+const articleText = document.querySelector("#article-text");
 const contentWarning = document.querySelector("#content-warning");
 const dailyCard = document.querySelector(".daily-card");
 const levelSelect = document.querySelector("#level-select");
@@ -209,6 +213,20 @@ imageFrame?.addEventListener("keyup", (event) => {
 
 revealNameButton?.addEventListener("click", () => revealText(dailyName));
 revealFactButton?.addEventListener("click", () => revealText(dailyFact));
+articleButton?.addEventListener("click", openArticleOverlay);
+articleClose?.addEventListener("click", closeArticleOverlay);
+articleOverlay?.addEventListener("click", (event) => {
+  if (event.target === articleOverlay) {
+    closeArticleOverlay();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && articleOverlay && !articleOverlay.hidden) {
+    closeArticleOverlay();
+  }
+});
+
 grayscaleOnly?.addEventListener("change", () => setBlurProgress(0));
 
 function showDailyScreen(mode) {
@@ -339,6 +357,11 @@ async function fetchSheetEntries(sheetId) {
         image: normalizeImageUrl(item.image || item.imageurl),
         name: item.name,
         fact: item.funfact || item.fact || item.funfacts,
+        plaintext: [
+          item.plaintext1,
+          item.plaintext2,
+          item.plaintext3,
+        ].join(""),
         index: rowIndex,
       };
     })
@@ -599,6 +622,7 @@ function blankProtectedImage() {
   updateAchievementStar();
   dailyName.textContent = "";
   dailyFact.textContent = "";
+  closeArticleOverlay();
   imagePlaceholder.textContent = "Protected image area";
   setStatus("");
 }
@@ -826,4 +850,23 @@ function updateCompletionMessage(images, total) {
 
   completionMessage.hidden =
     typeof total !== "number" || total === 0 || images < total;
+}
+
+function openArticleOverlay() {
+  if (!articleOverlay || !articleText) {
+    return;
+  }
+
+  const text = currentEntry?.plaintext?.trim();
+
+  articleText.textContent =
+    text || "This is empty! It shoulnd't be. Notify me via the Feedback button :)";
+  articleOverlay.hidden = false;
+  articleClose?.focus();
+}
+
+function closeArticleOverlay() {
+  if (articleOverlay) {
+    articleOverlay.hidden = true;
+  }
 }
